@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "@/components/ui/providers/Theme-provider";
+import { cn } from "@/lib/utils";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,13 +27,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-  <ClerkProvider>
-        <html lang="en">
+  <ClerkProvider    appearance={{
+   
+    variables: {
+      colorText: "#fff",
+      colorPrimary: "#0E78F9",
+      colorBackground: "#1C1F2E",
+      colorInputBackground: "#252A41",
+      colorInputText: "#fff",
+    },
+  }}>
+        <html lang="en" suppressHydrationWarning>
 
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased ` }
             >
-            {children}
+              <ThemeProvider 
+              attribute="class"
+              defaultTheme="dark"
+      
+              // enableSystem={true}
+              // storageKey="discord-theme"
+              >
+                  {children}
+            </ThemeProvider>
           </body>
         </html>
    </ClerkProvider>

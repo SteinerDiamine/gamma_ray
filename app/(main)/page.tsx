@@ -1,13 +1,20 @@
-
-
-import { Button } from "@/components/ui/button"
+"use client"
+import { ModeToggle } from "@/components/Mode-toggle"
+import { UserButton } from "@clerk/nextjs"
 
 export default function Home() {
   return (
+
     <div>
-      <Button variant={"destructive"}
-       className="bg-white text-blue-500">Home</Button>
+           <UserButton
+                  afterSignOutUrl="/">
+
+
+           </UserButton>
+           <ModeToggle />         
     </div>
+   
+   
   )
 }
 
