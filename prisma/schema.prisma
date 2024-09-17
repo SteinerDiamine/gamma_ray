@@ -1,46 +1,43 @@
-// prisma/schema.prisma
 datasource db {
   provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
   // uncomment next line if you use Prisma <5.10
   // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
-
-model Profile {
-  id        String   @default(uuid())
-  userId    String @unique
-  name String
-  imageUrl String @db.Text
-  email String @db.Text
-
-  servers Server[]
-  members Member[]
-  channels Channel[]
-
-
-  createdAt  DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  
+generator client {
+  provider = "prisma-client-js"
 }
 
-model Server {
-  id String @id @default(uuid())
-  name String
-  imageUrl String @db.Text
-  inviteCode String @db.Text
+model Profile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  name      String
+  imageUrl  String   @db.Text
+  email     String   @db.Text
 
-  profileId String
-  profile Profile @relation(fields: [profileId], onDelete: Cascade)
-
-  members Member[]
-  channels Channel[]
-
+  servers   Server[]
+  members   Member[]
+  channels  Channel[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
+model Server {
+  id        String   @id @default(uuid())
+  name      String
+  imageUrl  String   @db.Text
+  inviteCode String  @db.Text
+
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  members   Member[]
+  channels  Channel[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([profileId])
 }
@@ -52,46 +49,42 @@ enum MemberRole {
 }
 
 model Member {
-  id        String   @default(uuid())
-  
+  id        String   @id @default(uuid())
   role      MemberRole @default(GUEST)
-  profile Profile @relation(fields:[profileId], references:[id],onDelete: Cascade)
+  
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  serverId String
-  server Server @relation(fields: [serverId], onDelete: CASCADE)
+  serverId  String
+  server    Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
-   createdAt  DateTime @default(now())
-   updatedAt DateTime @updatedAt
-
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([profileId])
   @@index([serverId])
+}
 
-  }
+enum ChannelType {
+  TEXT
+  AUDIO
+  VIDEO
+}
 
-  enum ChannelType{
-    Text
-    AUDIO
-    VIDEO
+model Channel {
+  id        String   @id @default(uuid())
+  name      String
+  type      ChannelType @default(TEXT)
 
-  }
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  model Channel{
-    id String @default(uuid())
-    name String
-    type ChannelType @default(TEXT)
+  serverId  String
+  server    Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
-    profileId String
-    profile Profile @relation(fields: [profileId], references:[id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    serverId String
-    server Server @relation(fields: [serverId], references:[id], onDelete: Cascade)
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-     
-    @@index([profileId])    
-    @@index([serverId])
-
-  }
-
+  @@index([profileId])
+  @@index([serverId])
+}
