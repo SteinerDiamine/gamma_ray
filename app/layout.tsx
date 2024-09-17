@@ -39,15 +39,18 @@ export default function RootLayout({
   }}>
         <html lang="en" suppressHydrationWarning>
 
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased ` }
-            >
+        <body
+          className={cn(
+            `${geistSans.variable} ${geistMono.variable} antialiased`,
+            "bg-white dark:bg-[#313338]"
+          )}
+        >
               <ThemeProvider 
               attribute="class"
               defaultTheme="dark"
       
-              // enableSystem={true}
-              // storageKey="discord-theme"
+              enableSystem={true}
+              storageKey="discord-theme"
               >
                   {children}
             </ThemeProvider>
